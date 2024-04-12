@@ -3,7 +3,7 @@
 import { useBoardStore } from "@/store/BoardStore";
 import { handleOnDragEnd } from "@/utility/handleOnDragEnd";
 import { useEffect } from "react";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import Column from "./Column";
 
 const Board = () => {

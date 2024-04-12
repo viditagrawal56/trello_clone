@@ -1,9 +1,17 @@
-import { Draggable, Droppable } from "react-beautiful-dnd";
+import { Draggable, Droppable } from "@hello-pangea/dnd";
+import { PlusCircleIcon } from "@heroicons/react/24/solid";
+import TaskCard from "./TaskCard";
 
 type Props = {
   id: TypedColumn;
   tasks: Tasks[];
   index: number;
+};
+
+const idToColumnHeading: { [key in TypedColumn]: string } = {
+  todo: "To Do",
+  inprogress: "In Progress",
+  done: "Done",
 };
 
 const Column = ({ id, tasks, index }: Props) => {
@@ -25,7 +33,42 @@ const Column = ({ id, tasks, index }: Props) => {
                   snapshot.isDraggingOver ? "bg-green-200" : "bg-white/50"
                 }`}
               >
-                <h2>{id}</h2>
+                <h2 className="flex justify-between font-bold text-xl p-2">
+                  {idToColumnHeading[id]}
+
+                  <span className="text-gray-500 bg-gray-200 rounded-full px-2 py-1 text-sm font-normal">
+                    {tasks.length}
+                  </span>
+                </h2>
+
+                <div className="space-y-2">
+                  {tasks.map((task, index) => (
+                    <Draggable
+                      key={task.$id}
+                      draggableId={task.$id}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <TaskCard
+                          task={task}
+                          index={index}
+                          id={id}
+                          innerRef={provided.innerRef}
+                          draggableProps={provided.draggableProps}
+                          dragHandleProps={provided.dragHandleProps}
+                        />
+                      )}
+                    </Draggable>
+                  ))}
+
+                  {provided.placeholder}
+
+                  <div className="flex items-end justify-end p-2">
+                    <button className="text-green-500 hover:text-green-600">
+                      <PlusCircleIcon className="h-10 w-10" />
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
           </Droppable>
