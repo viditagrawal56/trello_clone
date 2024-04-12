@@ -7,17 +7,25 @@ import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import Column from "./Column";
 
 const Board = () => {
-  const [board, getBoard] = useBoardStore((state) => [
-    state.board,
-    state.getBoard,
-  ]);
+  const [board, getBoard, setBoardState, updateTaskInDB] = useBoardStore(
+    (state) => [
+      state.board,
+      state.getBoard,
+      state.setBoardState,
+      state.updateTaskInDB,
+    ]
+  );
 
   useEffect(() => {
     getBoard();
   }, [getBoard]);
 
   return (
-    <DragDropContext onDragEnd={handleOnDragEnd}>
+    <DragDropContext
+      onDragEnd={(result) =>
+        handleOnDragEnd(result, board, setBoardState, updateTaskInDB)
+      }
+    >
       <Droppable droppableId="board" direction="horizontal" type="column">
         {(provided) => (
           <div
