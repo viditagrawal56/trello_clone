@@ -2,13 +2,33 @@
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import Avatar from "react-avatar";
-import Sugession from "./Sugession";
+import Suggestion from "./Suggestion";
 import { useBoardStore } from "@/store/BoardStore";
+import { useEffect, useState } from "react";
+import fetchSuggestion from "@/utility/fetchSuggestion";
 const Header = () => {
-  const [searchString, setSearchString] = useBoardStore((state) => [
+  const [board, searchString, setSearchString] = useBoardStore((state) => [
+    state.board,
     state.searchString,
     state.setSearchString,
   ]);
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [suggestion, setSuggestion] = useState<string>("");
+
+  useEffect(() => {
+    if (board.columns.size === 0) return;
+    setLoading(true);
+
+    const fetchSuggestionFunc = async () => {
+      const suggestion = await fetchSuggestion(board);
+      setSuggestion(suggestion);
+      setLoading(false);
+    };
+
+    fetchSuggestionFunc();
+  }, [board]);
+
   return (
     <header>
       <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-br from-pink-400 to-[#0055D1] filter blur-3xl opacity-50 -z-50" />
@@ -31,7 +51,7 @@ const Header = () => {
           <Avatar name="Vidit Agrawal" round size="50" color="#0055D1" />
         </div>
       </div>
-      <Sugession />
+      <Suggestion loading={loading} suggestion={suggestion} />
     </header>
   );
 };
