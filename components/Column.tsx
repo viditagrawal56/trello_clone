@@ -1,6 +1,7 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import TaskCard from "./TaskCard";
+import { useBoardStore } from "@/store/BoardStore";
 
 type Props = {
   id: TypedColumn;
@@ -15,6 +16,8 @@ const idToColumnHeading: { [key in TypedColumn]: string } = {
 };
 
 const Column = ({ id, tasks, index }: Props) => {
+  const [searchString] = useBoardStore((state) => [state.searchString]);
+
   return (
     <Draggable draggableId={id} index={index}>
       {(provided) => (
@@ -42,24 +45,34 @@ const Column = ({ id, tasks, index }: Props) => {
                 </h2>
 
                 <div className="space-y-2">
-                  {tasks.map((task, index) => (
-                    <Draggable
-                      key={task.$id}
-                      draggableId={task.$id}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <TaskCard
-                          task={task}
-                          index={index}
-                          id={id}
-                          innerRef={provided.innerRef}
-                          draggableProps={provided.draggableProps}
-                          dragHandleProps={provided.dragHandleProps}
-                        />
-                      )}
-                    </Draggable>
-                  ))}
+                  {tasks.map((task, index) => {
+                    if (
+                      searchString &&
+                      !task.title
+                        .toLowerCase()
+                        .includes(searchString.toLowerCase())
+                    )
+                      return null;
+
+                    return (
+                      <Draggable
+                        key={task.$id}
+                        draggableId={task.$id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <TaskCard
+                            task={task}
+                            index={index}
+                            id={id}
+                            innerRef={provided.innerRef}
+                            draggableProps={provided.draggableProps}
+                            dragHandleProps={provided.dragHandleProps}
+                          />
+                        )}
+                      </Draggable>
+                    );
+                  })}
 
                   {provided.placeholder}
 
