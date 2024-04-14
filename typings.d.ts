@@ -14,10 +14,10 @@ interface Tasks {
   $createdAt: string;
   title: string;
   status: TypedColumn;
-  image?: string;
+  image?: Image;
 }
 
 interface Image {
-  buckeId: string;
+  bucketId: string;
   fileId: string;
 }
