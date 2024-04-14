@@ -2,6 +2,8 @@ import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import TaskCard from "./TaskCard";
 import { useBoardStore } from "@/store/BoardStore";
+import { useModalStore } from "@/store/ModalStore";
+import handleAddTodo from "@/utility/handleAddTodo";
 
 type Props = {
   id: TypedColumn;
@@ -16,7 +18,12 @@ const idToColumnHeading: { [key in TypedColumn]: string } = {
 };
 
 const Column = ({ id, tasks, index }: Props) => {
-  const [searchString] = useBoardStore((state) => [state.searchString]);
+  const [searchString, setNewTaskType] = useBoardStore((state) => [
+    state.searchString,
+    state.setNewTaskType,
+  ]);
+
+  const openModal = useModalStore((state) => state.openModal);
 
   return (
     <Draggable draggableId={id} index={index}>
@@ -77,7 +84,12 @@ const Column = ({ id, tasks, index }: Props) => {
                   {provided.placeholder}
 
                   <div className="flex items-end justify-end p-2">
-                    <button className="text-green-500 hover:text-green-600">
+                    <button
+                      onClick={() =>
+                        handleAddTodo({ id, setNewTaskType, openModal })
+                      }
+                      className="text-green-500 hover:text-green-600"
+                    >
                       <PlusCircleIcon className="h-10 w-10" />
                     </button>
                   </div>
