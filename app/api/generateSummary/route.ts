@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   //tasks in the body of the POST req
   const { tasks } = await request.json();
-  // console.log(tasks);
 
   //communicate with OpenAI GPT
   const response = await openai.chat.completions.create({
@@ -29,7 +28,6 @@ export async function POST(request: Request) {
   });
 
   const { choices } = response;
-  console.log(choices[0].message);
 
   return NextResponse.json(choices[0].message);
 }
