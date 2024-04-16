@@ -5,18 +5,18 @@ import { create } from "zustand";
 
 interface BoardState {
   board: Board;
+  searchString: string;
+  newTaskInput: string;
+  newTaskType: TypedColumn;
+  image: File | null;
   getBoard: () => void;
   setBoardState: (board: Board) => void;
-  updateTaskInDB: (task: Tasks, columnId: TypedColumn) => void;
-  searchString: string;
   setSearchString: (searchString: string) => void;
-  deleteTask: (taskIndex: number, taskId: Tasks, id: TypedColumn) => void;
-  newTaskInput: string;
   setNewTaskInput: (input: string) => void;
-  newTaskType: TypedColumn;
   setNewTaskType: (columnId: TypedColumn) => void;
-  image: File | null;
   setImage: (image: File | null) => void;
+  updateTaskInDB: (task: Tasks, columnId: TypedColumn) => void;
+  deleteTask: (taskIndex: number, taskId: Tasks, id: TypedColumn) => void;
   addTask: (task: string, columnId: TypedColumn, image?: File | null) => void;
 }
 
@@ -25,12 +25,30 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     columns: new Map<TypedColumn, Column>(),
   },
 
+  searchString: "",
+
+  newTaskInput: "",
+
+  newTaskType: "todo",
+
+  image: null,
+
   getBoard: async () => {
     const board = await getTasksGroupedByColumn();
     set({ board });
   },
 
   setBoardState: (board) => set({ board }),
+
+  setSearchString: (searchString) => set({ searchString }),
+
+  setNewTaskInput: (input: string) => set({ newTaskInput: input }),
+
+  setNewTaskType: (columnId: TypedColumn) => set({ newTaskType: columnId }),
+
+  setImage: (image: File | null) => {
+    set({ image });
+  },
 
   updateTaskInDB: async (task, columnId) => {
     await databases.updateDocument(
@@ -43,10 +61,6 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       }
     );
   },
-
-  searchString: "",
-
-  setSearchString: (searchString) => set({ searchString }),
 
   deleteTask: async (taskIndex: number, task: Tasks, id: TypedColumn) => {
     const newColumns = new Map(get().board.columns);
@@ -66,18 +80,6 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       process.env.NEXT_PUBLIC_TASK_COLLECTION_ID!,
       task.$id
     );
-  },
-
-  newTaskInput: "",
-
-  setNewTaskInput: (input: string) => set({ newTaskInput: input }),
-
-  newTaskType: "todo",
-  setNewTaskType: (columnId: TypedColumn) => set({ newTaskType: columnId }),
-
-  image: null,
-  setImage: (image: File | null) => {
-    set({ image });
   },
 
   addTask: async (task: string, columnId: TypedColumn, image?: File | null) => {
