@@ -22,6 +22,8 @@ export const handleOnDragEnd = (
       ...board,
       columns: rearrangedColumns,
     });
+
+    return;
   }
 
   //This step is needed as shte indexes are stored as numbers 0,1,2 etc instead of id's with the DND library
