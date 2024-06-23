@@ -11,7 +11,7 @@ const fetchSuggestion = async (board: Board) => {
       body: JSON.stringify({ tasks }),
     });
     if (res.status === 500)
-      return "You exceeded your current quota, please check your plan and billing details!";
+      return `We ran out of credits :') The result would have been something like ("Today, take the cat for a walk, go for a walk, and finish preparing the Toursheet—have a productive day!")`;
     const GPTdata = await res.json();
     const { content } = GPTdata;
     return content;

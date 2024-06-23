@@ -38,6 +38,8 @@ const TaskCard = ({
           setImageUrl(url.toString());
         }
       };
+
+      fetchImage();
     }
   }, [task]);
 
